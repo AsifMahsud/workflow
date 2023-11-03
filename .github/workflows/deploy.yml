@@ -1,0 +1,33 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - development
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set Environment Variables
+        run: |
+          if [ "$GITHUB_REF" == "refs/heads/master" ]; then
+            echo "ENVIRONMENT=production" >> $GITHUB_ENV
+            echo "DEPLOY_DIR=/var/www/fadsserver.webdrvn.com/" >> $GITHUB_ENV
+          elif [ "$GITHUB_REF" == "refs/heads/development" ]; then
+            echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+            echo "DEPLOY_DIR=/var/www/fadsserver.webdrvn.com/" >> $GITHUB_ENV
+          fi
+        shell: bash
+
+      - name: Print Environment Variables
+        run: |
+          echo "DEPLOY_DIR: $DEPLOY_DIR"
+          echo "SSH_USERNAME: $SSH_USERNAME"
+          if [[ "${{ secrets.SSH_HOST }}" == "production" ]]; then
+            echo "Yaho"
+          fi
