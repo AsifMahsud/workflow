@@ -9,16 +9,31 @@ on:
 jobs:
   deployment:
     runs-on: ubuntu-latest
-    environment: production
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Determine Environment
+        id: environment
+        run: |
+          if [ "$GITHUB_REF" == "refs/heads/master" ]; then
+            echo "ENVIRONMENT=production" >> $GITHUB_ENV
+            echo "DEPLOY_DIR=/var/www/fadsserver.webdrvn.com/" >> $GITHUB_ENV
+          elif [ "$GITHUB_REF" == "refs/heads/development" ]; then
+            echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+            echo "DEPLOY_DIR=/var/www/fadsserver.webdrvn.com/" >> $GITHUB_ENV
+          else
+            echo "ENVIRONMENT=unknown" >> $GITHUB_ENV
+            echo "DEPLOY_DIR=unknown" >> $GITHUB_ENV
+          fi
+      shell: bash
+
       - name: Print Environment Variables
         run: |
           echo "DEPLOY_DIR: $DEPLOY_DIR"
-          echo "SSH_USERNAME: ${{ vars.SSH_USERNAME }}"
+          echo "SSH_USERNAME: ${{ env.SSH_USERNAME }}"
           if [[ "${{ secrets.SSH_HOST }}" != "production" ]]; then
             echo "Yaho"
           fi
+        env:
+          DEPLOY_DIR: ${{ env.DEPLOY_DIR }}
