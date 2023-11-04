@@ -32,6 +32,5 @@ jobs:
             echo "Yaho"
           fi
         env:
-          DEPLOY_DIR: ${{ env.DEPLOY_DIR }}
-          SSH_USERNAME: $SSH_USERNAME
+          SSH_USERNAME: ${{ env.SSH_USERNAME }}
 
