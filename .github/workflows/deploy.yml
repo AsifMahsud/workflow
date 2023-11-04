@@ -16,10 +16,10 @@ jobs:
       - name: Determine Environment
         id: environment
         run: |
-          if [ "$GITHUB_REF" == "refs/heads/master" ]; then
+          if [ "${GITHUB_REF#refs/heads/}" == "master" ]; then
             echo "ENVIRONMENT=production" >> $GITHUB_ENV
             echo "DEPLOY_DIR=/var/www/fadsserver.webdrvn.com/" >> $GITHUB_ENV
-          elif [ "$GITHUB_REF" == "refs/heads/development" ]; then
+          elif [ "${GITHUB_REF#refs/heads/}" == "development" ]; then
             echo "ENVIRONMENT=staging" >> $GITHUB_ENV
             echo "DEPLOY_DIR=/var/www/fadsserver.webdrvn.com/" >> $GITHUB_ENV
           else
@@ -27,12 +27,12 @@ jobs:
             echo "DEPLOY_DIR=unknown" >> $GITHUB_ENV
           fi
 
-        - name: Print Environment Variables
-          run: |
-            echo "DEPLOY_DIR: $DEPLOY_DIR"
-            echo "SSH_USERNAME: ${{ env.SSH_USERNAME }}"
-            if [[ "${{ secrets.SSH_HOST }}" != "production" ]]; then
-              echo "Yaho"
-            fi
-          env:
-            DEPLOY_DIR: ${{ env.DEPLOY_DIR }}
+      - name: Print Environment Variables
+        run: |
+          echo "DEPLOY_DIR: $DEPLOY_DIR"
+          echo "SSH_USERNAME: $SSH_USERNAME"
+          if [[ "${{ secrets.SSH_HOST }}" != "production" ]]; then
+            echo "Yaho"
+          fi
+        env:
+          DEPLOY_DIR: ${{ env.DEPLOY_DIR }}
