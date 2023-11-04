@@ -18,7 +18,7 @@ jobs:
       - name: Print Environment Variables
         run: |
           echo "DEPLOY_DIR: $DEPLOY_DIR"
-          echo "SSH_USERNAME: $SSH_USERNAME"
-          if [[ "${{ secrets.SSH_HOST }}" == "production" ]]; then
+          echo "SSH_USERNAME: ${{ vars.SSH_USERNAME }}"
+          if [[ "${{ secrets.SSH_HOST }}" != "production" ]]; then
             echo "Yaho"
           fi
